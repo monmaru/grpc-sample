@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package ght;
+
+// The service definition.
+service GithubTrending {
+  // Sends a repositories.
+  rpc Fetch (Req) returns (Res);
+}
+
+// The request message containing the language name.
+message Req {
+  string lang = 1; 
+}
+
+// The response message containing the repositories.
+message Res {
+  repeated Repository repositories = 1;
+}
+
+message Repository {
+  int32 rank = 1;
+  string owner = 2;
+  string title = 3;
+  string url = 4;
+  string description = 5;
+  string lang = 6;
+  Star star = 7;
+}
+
+message Star {
+  int32 today = 1;
+  int32 total = 2;
+}
