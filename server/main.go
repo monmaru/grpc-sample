@@ -4,15 +4,23 @@ import (
 	"flag"
 	"log"
 	"net"
-	"strconv"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	pb "github.com/monmaru/github-tren-go/proto"
+	"github.com/google/go-querystring/query"
+	pb "github.com/monmaru/grpc-sample/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
+
+// QS ...
+type QS struct {
+	Lang string `url:"l"`
+}
+
+var reg = regexp.MustCompile("(.*) stars today")
 
 type ght struct{}
 
@@ -21,38 +29,55 @@ func (g *ght) Fetch(c context.Context, req *pb.Req) (*pb.Res, error) {
 		return nil, grpc.Errorf(codes.InvalidArgument, "language name is empty.")
 	}
 
-	doc, err := goquery.NewDocument("https://github.com/trending?lang=" + req.Lang)
+	v, _ := query.Values(QS{Lang: req.Lang})
+	url := "https://github.com/trending?" + v.Encode()
+	doc, err := goquery.NewDocument(url)
 	if err != nil {
-		return nil, grpc.Errorf(codes.Internal, "url scarapping failed")
+		return nil, grpc.Errorf(codes.Internal, "scarapping failed")
 	}
 
 	log.Printf("[START] Fetch: %s", req.Lang)
 	repos := []*pb.Repository{}
-	doc.Find(".repo-list li").Each(func(n int, s *goquery.Selection) {
-		url, _ := s.Find("h3 a").Attr("href")
-		refs := strings.Split(url, "/")
-
-		repos = append(repos, &pb.Repository{
-			Rank:        int32(n),
-			Owner:       refs[1],
-			Title:       refs[2],
-			Url:         "https://github.com" + url,
-			Description: strings.Trim(s.Find("div[class=py-1] > p").Text(), " "),
-			Lang:        strings.Trim(s.Find("span[class=float-right]").Text(), " "),
-			Star: &pb.Star{
-				Today: parseInt(s.Find("span[class=float-right]").Text()),
-				Total: parseInt(s.Find("span[class=float-right]").Text()),
-			},
-		})
+	doc.Find(".repo-list li").Each(func(idx int, s *goquery.Selection) {
+		repos = append(repos, parse(idx, s))
 	})
 
 	log.Printf("[END] Fetch: %s", req.Lang)
 	return &pb.Res{Repositories: repos}, nil
 }
 
-func parseInt(s string) int32 {
-	num, _ := strconv.ParseInt(s, 10, 32)
-	return int32(num)
+func parse(idx int, s *goquery.Selection) *pb.Repository {
+	href, _ := s.Find("h3 a").Attr("href")
+	refs := strings.Split(href, "/")
+	description := sanitize(s.Find("div[class=py-1] > p").Text())
+	lang := sanitize(s.Find("span[itemprop=programmingLanguage]").Text())
+	todayStar := sanitize(s.Find("span[class=float-right]").Text())
+	if todayStar == "" {
+		todayStar = "-"
+	} else {
+		todayStar = reg.FindStringSubmatch(todayStar)[1]
+	}
+	totalStar := sanitize(s.Find("a[aria-label=Stargazers]").Text())
+
+	return &pb.Repository{
+		Rank:        int32(idx + 1),
+		Owner:       refs[1],
+		Title:       refs[2],
+		Url:         "https://github.com" + href,
+		Description: description,
+		Lang:        lang,
+		Star: &pb.Star{
+			Today: todayStar,
+			Total: totalStar,
+		},
+	}
+}
+
+func sanitize(s string) string {
+	s = strings.Trim(s, "\n")
+	s = strings.Trim(s, " ")
+	s = strings.Trim(s, "\n")
+	return strings.Trim(s, " ")
 }
 
 func main() {

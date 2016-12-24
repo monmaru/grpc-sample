@@ -29,6 +29,6 @@ message Repository {
 }
 
 message Star {
-  int32 today = 1;
-  int32 total = 2;
+  string today = 1;
+  string total = 2;
 }
