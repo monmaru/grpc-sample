@@ -1,11 +1,17 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package ght;
 
 // The service definition.
 service GithubTrending {
   // Sends a repositories.
-  rpc Fetch (Req) returns (Res);
+  rpc Fetch (Req) returns (Res) {
+    option (google.api.http) = {
+      get: "/api/trending/{lang}"
+    };
+  }
 }
 
 // The request message containing the language name.

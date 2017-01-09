@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script type="application/javascript" src="swagger-client.min.js"></script>
+  <script type="application/javascript"> 
+      window.client = new SwaggerClient({
+        url: "http://localhost:8080/swagger/ght.swagger.json",
+        success: function() {
+          console.log('OK');
+          client.GithubTrending.Fetch(
+            { lang: { "name": "C#" } },
+            { responseContentType: 'application/json' },
+            function(data) {
+              document.getElementById("mydata").innerHTML = JSON.stringify(data.obj);
+            }
+          );
+        }
+      });
+    </script>
+  <body>
+    <h3>GRPC and Swagger</h3>
+    <div id="mydata"></div>
+  </body>
+</html>

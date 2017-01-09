@@ -1,8 +1,8 @@
 # grpc-sample
 
-## Generate gRPC code
+## Generate gRPC stubs and gateway 
 ```
-protoc -I proto/ proto/ght.proto --go_out=plugins=grpc:proto
+make all
 ```
 ## Run Server
 ```
@@ -11,4 +11,8 @@ go run server/main.go
 ## Run Client
 ```
 go run client/main.go -l Go
+```
+## Run Proxy Server
+```
+go run proxy/main.go
 ```

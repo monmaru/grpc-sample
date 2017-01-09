@@ -1,0 +1,114 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/ght.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/trending/{lang}": {
+      "get": {
+        "summary": "Sends a repositories.",
+        "operationId": "Fetch",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ghtRes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ],
+        "tags": [
+          "GithubTrending"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ghtRepository": {
+      "type": "object",
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "owner": {
+          "type": "string",
+          "format": "string"
+        },
+        "title": {
+          "type": "string",
+          "format": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "string"
+        },
+        "description": {
+          "type": "string",
+          "format": "string"
+        },
+        "lang": {
+          "type": "string",
+          "format": "string"
+        },
+        "star": {
+          "$ref": "#/definitions/ghtStar"
+        }
+      }
+    },
+    "ghtReq": {
+      "type": "object",
+      "properties": {
+        "lang": {
+          "type": "string",
+          "format": "string"
+        }
+      },
+      "description": "The request message containing the language name."
+    },
+    "ghtRes": {
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ghtRepository"
+          }
+        }
+      },
+      "description": "The response message containing the repositories."
+    },
+    "ghtStar": {
+      "type": "object",
+      "properties": {
+        "today": {
+          "type": "string",
+          "format": "string"
+        },
+        "total": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    }
+  }
+}

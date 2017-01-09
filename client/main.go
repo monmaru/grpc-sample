@@ -12,9 +12,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	addrFlag = flag.String("addr", "localhost:5000", "server address host:post")
-)
+var addrFlag = flag.String("addr", "localhost:5000", "server address host:post")
 
 func fetch(lang string) ([]*pb.Repository, error) {
 	conn, err := grpc.Dial(*addrFlag, grpc.WithInsecure())
@@ -72,7 +70,6 @@ func main() {
 		}
 
 		repos, err := fetch(lang)
-
 		if err != nil {
 			return err
 		}
