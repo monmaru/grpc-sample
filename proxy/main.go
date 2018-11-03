@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"net/http"
 	"path"
@@ -9,7 +10,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	gw "github.com/monmaru/grpc-sample/proto"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 

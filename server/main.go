@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	"net"
@@ -8,17 +9,10 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/google/go-querystring/query"
 	pb "github.com/monmaru/grpc-sample/proto"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
-
-// QS ...
-type QS struct {
-	Lang string `url:"l"`
-}
 
 var reg = regexp.MustCompile("(.*) stars today")
 
@@ -29,8 +23,7 @@ func (g *ght) Fetch(c context.Context, req *pb.Req) (*pb.Res, error) {
 		return nil, grpc.Errorf(codes.InvalidArgument, "language name is empty.")
 	}
 
-	v, _ := query.Values(QS{Lang: req.Lang})
-	url := "https://github.com/trending?" + v.Encode()
+	url := "https://github.com/trending/" + req.Lang
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		return nil, grpc.Errorf(codes.Internal, "scarapping failed")

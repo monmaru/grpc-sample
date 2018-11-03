@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -8,7 +9,6 @@ import (
 
 	pb "github.com/monmaru/grpc-sample/proto"
 	"github.com/urfave/cli"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 

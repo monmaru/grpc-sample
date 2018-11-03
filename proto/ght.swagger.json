@@ -21,7 +21,7 @@
         "operationId": "Fetch",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/ghtRes"
             }
@@ -32,8 +32,7 @@
             "name": "lang",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -51,39 +50,24 @@
           "format": "int32"
         },
         "owner": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "title": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "url": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "lang": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "star": {
           "$ref": "#/definitions/ghtStar"
         }
       }
-    },
-    "ghtReq": {
-      "type": "object",
-      "properties": {
-        "lang": {
-          "type": "string",
-          "format": "string"
-        }
-      },
-      "description": "The request message containing the language name."
     },
     "ghtRes": {
       "type": "object",
@@ -101,12 +85,10 @@
       "type": "object",
       "properties": {
         "today": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "total": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     }
